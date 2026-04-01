@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>추가옵션 시뮬레이터</title>
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background-color: #f0f0f0; }
+        
+        .maple-tooltip {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(11, 17, 26, 0.9);
+            border: 2px solid #a3a2a2;
+            border-radius: 5px;
+            color: white;
+            width: 280px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .bonus-stat { color: #ccff00; font-weight: bold; }
+        .stat-row { display: flex; justify-content: flex-start; }
+        .stat-name { display: inline-block; margin-right: 5px; }
+
+        .settings-box {
+            background: #fff; border: 1px solid #ccc; padding: 15px;
+            border-radius: 8px; margin-bottom: 20px; max-width: 400px;
+        }
+        .settings-box input { width: 60px; margin-bottom: 5px; }
+        .btn-group button { padding: 10px; font-weight: bold; cursor: pointer; margin-right: 5px; }
+        #autoRollBtn { background-color: #ffeb3b; border: 1px solid #cddc39; border-radius: 5px; }
+        #resetBtn { background-color: #f44336; color: white; border: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h2>보스 방어구 환불 시뮬레이터</h2>
+    
+    <div class="settings-box">
+        <label for="levelSelect">장비 레벨:</label>
+        <select id="levelSelect">
+            <option value="150">150제 (카루타 등)</option>
+            <option value="160">160제 (앱솔랩스 등)</option>
+            <option value="200" selected>200제 (아케인셰이드)</option>
+            <option value="250">250제 (에테르넬)</option>
+        </select><br><br>
+
+        <label for="flameSelect">환불 종류:</label>
+        <select id="flameSelect">
+            <option value="검은 환생의 불꽃">검은 환생의 불꽃</option>
+            <option value="심연의 환생의 불꽃">심연의 환생의 불꽃</option>
+        </select><br><hr>
+
+        <strong>환산치(추옵 급수) 설정</strong><br>
+        <label>주스탯:</label>
+        <select id="mainStatSelect">
+            <option value="STR">STR</option>
+            <option value="DEX">DEX</option>
+            <option value="INT">INT</option>
+            <option value="LUK">LUK</option>
+        </select><br>
+        부스탯 가중치 : <input type="number" id="subWeight" step="0.1" value="0.1"><br>
+        공/마 가중치 : <input type="number" id="attWeight" step="0.1" value="2.5"><br>
+        올스탯 가중치 : <input type="number" id="allStatWeight" step="0.1" value="11"><br>
+        목표 환산치(급) : <input type="number" id="targetScore" value="120"><br>
+    </div>
+
+    <div class="btn-group">
+        <button id="rollBtn">한 번 돌리기</button>
+        <button id="autoRollBtn">목표 도달할 때 자동 멈춤!</button>
+        <button id="resetBtn">초기화</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

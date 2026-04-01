@@ -1,0 +1,24 @@
+{
+    "options_list": [
+      "STR", "DEX", "INT", "LUK", "STR_DEX", "STR_INT", "STR_LUK", "DEX_INT", "DEX_LUK", "INT_LUK",
+      "MAX_HP", "MAX_MP", "LEVEL_REDUCTION", "DEFENSE", "ATTACK", "MAGIC_ATTACK", "SPEED", "JUMP", "ALL_STAT"
+    ],
+    "flame_probabilities": {
+      "검은 환생의 불꽃": { "4": 0.29, "5": 0.45, "6": 0.25, "7": 0.01 },
+      "심연의 환생의 불꽃": { "5": 0.63, "6": 0.34, "7": 0.03 }
+    },
+    "common_base": {
+      "ALL_STAT": 1,
+      "ATTACK": 1,
+      "MAGIC_ATTACK": 1,
+      "SPEED": 1,
+      "JUMP": 1,
+      "LEVEL_REDUCTION": 5
+    },
+    "level_base": {
+      "150": { "SINGLE": 8, "DOUBLE": 4, "MAX_HP": 350, "MAX_MP": 350, "DEFENSE": 8 },
+      "160": { "SINGLE": 9, "DOUBLE": 5, "MAX_HP": 480, "MAX_MP": 480, "DEFENSE": 9 },
+      "200": { "SINGLE": 11, "DOUBLE": 6, "MAX_HP": 600, "MAX_MP": 600, "DEFENSE": 11 },
+      "250": { "SINGLE": 12, "DOUBLE": 7, "MAX_HP": 700, "MAX_MP": 700, "DEFENSE": 12 }
+    }
+  }
