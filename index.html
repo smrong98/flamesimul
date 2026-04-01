@@ -2,75 +2,225 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>추가옵션 시뮬레이터</title>
     <style>
-        body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background-color: #f0f0f0; }
-        
-        .maple-tooltip {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: rgba(11, 17, 26, 0.9);
-            border: 2px solid #a3a2a2;
-            border-radius: 5px;
-            color: white;
-            width: 280px;
-            font-size: 14px;
-            line-height: 1.6;
+        :root {
+            --bg-color: #121212;
+            --panel-bg: #1e1e1e;
+            --border-color: #333;
+            --text-main: #e0e0e0;
+            --text-muted: #888;
+            --point-color: #8ab82a;
         }
-        
-        .bonus-stat { color: #ccff00; font-weight: bold; }
-        .stat-row { display: flex; justify-content: flex-start; }
-        .stat-name { display: inline-block; margin-right: 5px; }
 
-        .settings-box {
-            background: #fff; border: 1px solid #ccc; padding: 15px;
-            border-radius: 8px; margin-bottom: 20px; max-width: 400px;
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .settings-box input { width: 60px; margin-bottom: 5px; }
-        .btn-group button { padding: 10px; font-weight: bold; cursor: pointer; margin-right: 5px; }
-        #autoRollBtn { background-color: #ffeb3b; border: 1px solid #cddc39; border-radius: 5px; }
-        #resetBtn { background-color: #f44336; color: white; border: none; border-radius: 5px; }
+
+        h2 { color: var(--point-color); width: 100%; max-width: 900px; margin-top: 0; margin-bottom: 5px; }
+        .header-info { color: var(--text-muted); font-size: 13px; width: 100%; max-width: 900px; margin-bottom: 20px; }
+        
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .settings-panel {
+            flex: 1;
+            min-width: 280px;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .results-panel {
+            flex: 1.5;
+            min-width: 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label { display: inline-block; width: 110px; margin-bottom: 10px; color: var(--text-muted); font-size: 14px; }
+        select, input {
+            background-color: #2a2a2a;
+            color: white;
+            border: 1px solid #555;
+            padding: 6px 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        input[type="number"] { width: 70px; }
+        
+        hr { border: 0; border-top: 1px solid var(--border-color); margin: 20px 0; }
+        strong { color: var(--point-color); display: inline-block; margin-bottom: 15px; font-size: 16px; }
+
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+        button {
+            background-color: #333;
+            color: white;
+            border: 1px solid #555;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        button:hover { background-color: #444; }
+        button:disabled { background-color: #555; color: #888; cursor: not-allowed; }
+        #autoRollBtn { background-color: var(--point-color); color: #111; border: none; flex-grow: 1; }
+        #autoRollBtn:hover:not(:disabled) { background-color: #96ba3c; }
+
+        /* 결과 요약 박스 (가운데 정렬 및 여백 축소) */
+        .summary-box {
+            background-color: #2a3026;
+            border: 1px solid #4a5c39;
+            border-radius: 5px;
+            padding: 10px 15px; /* 위아래 패딩을 10px로 축소 */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 5px; /* 요소들 사이의 간격을 5px로 촘촘하게 설정 */
+        }
+
+        /* 상세 옵션 박스 */
+        .details-box {
+            background-color: #252525;
+            border: 1px solid #444;
+            padding: 12px;
+            border-radius: 5px;
+            min-height: 85px;
+        }
+
+        /* 카드 UI */
+        .card-wrapper {
+            display: flex;
+            justify-content: center; /* 카드 가운데 정렬 핵심 */
+            width: 100%;
+        }
+
+        .option-card {
+            background-color: #161616;
+            border: 1px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 350px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            opacity: 1;
+        }
+        
+        .card-header {
+            background-color: var(--point-color);
+            color: #fff;
+            text-align: center;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .card-body {
+            padding: 15px;
+            font-size: 14px;
+            line-height: 1.8;
+            height: 160px;
+            box-sizing: border-box;
+        }
+
+        .stat-row { color: #fff; }
+
+        /* 최종 결과를 돋보이게 하는 페이드인 효과 */
+        @keyframes popIn {
+            0% { transform: scale(0.95); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .fade-in-anim {
+            animation: popIn 0.3s ease-out forwards;
+        }
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
-    <h2>보스 방어구 환불 시뮬레이터</h2>
-    
-    <div class="settings-box">
-        <label for="levelSelect">장비 레벨:</label>
-        <select id="levelSelect">
-            <option value="150">150제 (카루타 등)</option>
-            <option value="160">160제 (앱솔랩스 등)</option>
-            <option value="200" selected>200제 (아케인셰이드)</option>
-            <option value="250">250제 (에테르넬)</option>
-        </select><br><br>
+    <h2>추가옵션 시뮬레이터</h2>
+    <div class="header-info">업데이트: 2026-04-01 / 제작: 크로아 - 윈메롱</div>
+    <div class="container">
+        <div class="settings-panel">
+            <strong>설정</strong><br>
+            <label for="levelSelect">아이템 레벨</label>
+            <select id="levelSelect">
+                <option value="150">150제</option>
+                <option value="160">160제</option>
+                <option value="200" selected>200제</option>
+                <option value="250">250제</option>
+            </select><br>
 
-        <label for="flameSelect">환불 종류:</label>
-        <select id="flameSelect">
-            <option value="검은 환생의 불꽃">검은 환생의 불꽃</option>
-            <option value="심연의 환생의 불꽃">심연의 환생의 불꽃</option>
-        </select><br><hr>
+            <label for="flameSelect">재설정 종류</label>
+            <select id="flameSelect">
+                <option value="검은 환생의 불꽃">검은 환생의 불꽃</option>
+                <option value="심연의 환생의 불꽃">심연의 환생의 불꽃</option>
+            </select>
+            <hr>
 
-        <strong>환산치(추옵 급수) 설정</strong><br>
-        <label>주스탯:</label>
-        <select id="mainStatSelect">
-            <option value="STR">STR</option>
-            <option value="DEX">DEX</option>
-            <option value="INT">INT</option>
-            <option value="LUK">LUK</option>
-        </select><br>
-        부스탯 가중치 : <input type="number" id="subWeight" step="0.1" value="0.1"><br>
-        공/마 가중치 : <input type="number" id="attWeight" step="0.1" value="2.5"><br>
-        올스탯 가중치 : <input type="number" id="allStatWeight" step="0.1" value="11"><br>
-        목표 환산치(급) : <input type="number" id="targetScore" value="120"><br>
+            <strong>자동 돌리기 조건</strong><br>
+            <label>주스탯 기준</label>
+            <select id="mainStatSelect">
+                <option value="STR">STR</option>
+                <option value="DEX" selected>DEX</option>
+                <option value="INT">INT</option>
+                <option value="LUK">LUK</option>
+            </select><br>
+            <label>부스탯 가중치</label> <input type="number" id="subWeight" step="0.1" value="0.1"><br>
+            <label>공/마 가중치</label> <input type="number" id="attWeight" step="0.1" value="2.5"><br>
+            <label>올스탯 가중치</label> <input type="number" id="allStatWeight" step="0.1" value="11"><br>
+            <label>목표 추옵</label> <input type="number" id="targetScore" value="180"><br>
+
+            <div class="btn-group">
+                <button id="resetBtn">리셋</button>
+                <button id="rollBtn">1회 돌리기</button>
+                <button id="autoRollBtn"> 자동 돌리기 시작</button>
+            </div>
+        </div>
+
+        <div class="results-panel" id="result">
+            <div class="summary-box">
+                <strong style="color: #fff; margin-bottom: 0;" id="result-attempts">재설정 횟수: 0회</strong>
+                <div id="result-meso-container" style="display: none;">
+                    <span style="color: #aaa; font-size: 13px; font-weight: normal;" id="result-meso">소모 메소: 0 메소</span>
+                </div>
+                <span id="result-score" style="color: #8ab82a; font-weight: bold; font-size: 18px; margin-top: 5px;">최종 추가옵션: 0.0급</span>
+            </div>
+
+            <div class="card-wrapper">
+                <div class="option-card" id="result-card">
+                    <div class="card-header">재설정 옵션</div>
+                    <div class="card-body" id="result-card-body">
+                        <div style="color: #666; text-align: center; margin-top: 50px;">옵션 대기 중...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-box" id="result-details">
+                <span style="color: #888; font-size: 12px; margin-bottom: 5px; display: inline-block;">[추출된 세부 옵션]</span><br>
+                <div id="result-details-content" style="color: #666; font-size: 13px;">결과 대기 중...</div>
+            </div>
+        </div>
     </div>
-
-    <div class="btn-group">
-        <button id="rollBtn">한 번 돌리기</button>
-        <button id="autoRollBtn">목표 도달할 때 자동 멈춤!</button>
-        <button id="resetBtn">초기화</button>
-    </div>
-
-    <div id="result"></div>
 
     <script src="app.js"></script>
 </body>
